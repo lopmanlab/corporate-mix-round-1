@@ -1,0 +1,329 @@
+---
+title: "Analysis_Corporate Mix Phase I"
+date: "8/16/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Background
+The code below can be used to generate analytical and visualization outputs to understand social contact patterns in corporate settings in the US.
+
+## Installing required packages
+```{r include=FALSE}
+## Installing required packges
+package_list <- c(
+  "reshape2",
+  "ggplot2",
+  "ggpubr",
+  "dplyr",
+  "tidyverse",
+  "kableExtra",
+  "gridExtra",
+  "ggpubr",
+  "RColorBrewer",
+  "cowplot"
+)
+
+if(F){
+  install.packages(package_list)
+}
+
+lapply(package_list, function(x) library(x, character.only = T))
+
+rm(package_list)
+
+```
+
+## Functions
+```{r}
+## Function used to save legend of ggplot2 (allows manipulating legend)
+get_legend<-function(myggplot){
+  tmp <- ggplot_gtable(ggplot_build(myggplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)
+}
+
+## Function used to visualize age-specific contact mixing matrix with controls over title, text size, mid and max points for legend and legend position
+
+contactmatrix_viz<-function(matrix1,title,txt_size, mid, max, legendpos){
+  ggplot(data = matrix1, aes(x=factor(age_cat), y=factor(contact_age), fill=avg_cont)) +    ##var1 is age of person, var2 is age of contact
+  geom_raster(hjust = 0.5, vjust = 0.5,show.legend=T)+
+  scale_fill_gradient2(low = "white", high = "#273871", mid = "#7FABD3", midpoint = mid, limit = c(0,max))+
+  xlab("Age of participant")+ylab("Age of contact")+labs(fill = "Average \ncontact")+
+  theme_classic()+
+  theme(plot.title = element_text(size = 12), legend.title=element_text(size = 10),
+        axis.text.x = element_text(size = 10), # changed from txt_size (MK)
+        axis.text.y = element_text(size= 10),
+        legend.justification = "right",
+        legend.position = legendpos) +
+  ggtitle(title)
+}
+
+
+## Function used to wrangle long form contact data into age-specific mixing matrix grid
+## Last pipe does contact matrix visualization
+make_matrix <- function(df1, title, txt_size=10, mid =1.25, max = 2.5, legendpos="top") {
+                        df1 %>%group_by(age_cat,contact_age) %>% 
+                          summarize(tot_contacts=n()) %>% 
+                          full_join(standard_str1, by= c("age_cat","contact_age"),keep=F) %>%
+                          replace(is.na(.), 0) %>%
+                          left_join(part_age1,by="age_cat") %>%
+                          mutate(avg_cont = (tot_contacts/n))%>%
+                          contactmatrix_viz(title=title, txt_size= txt_size, mid=mid, max=max, legendpos=legendpos)
+}
+
+
+```
+
+## Read in data
+```{r}
+part <- readRDS("participant.RDS")     #Participant information
+contact<-readRDS("contact.RDS")        #Contact informtion
+day <- readRDS("day.RDS")              #Metadata on participant's day
+```
+
+## Overall median contacts per day
+```{r}
+day %>% 
+       do(data.frame(t(quantile(.$social_cont, probs=c(0.25,0.5,0.75)))))
+```
+
+## Distribution of participant characteristics and the median and interquartile range (IQR) of total contacts reported on the first diary day and first and second diary day combined
+```{r}
+
+list<-list(0)  ## empty list
+
+## specify participant characteristic stratfications for cross tabs/analysis
+variables<-data.frame(var=c("gender","age_cat","race","hispanic","hh_str"),
+                      name=c("Gender","Age Group","Race","Hispanic","Household structure")) %>%
+           mutate(var=as.character(var),
+                  name=as.character(name))
+
+## Loop below loops through all the variables in the list above
+## Calculates proportion of participants in each strata
+## Calculates median contacts on day 1 only 
+## Calculates median contacts on day 1+ day 2
+
+for (i in 1:nrow(variables)){
+  x <- part[,variables$var[[i]]]
+  
+# NUmber and proportion participants in each strata
+  
+  t1<-as.data.frame(cbind(table(x),                                               #TOtal 
+              round(prop.table(table(x))*100,digits=1)))                          #Proportion
+   colnames(t1)[1:2] <- c("Total","Col") 
+   Tot<-rep("",5)
+   
+# Median contacts on day 1 only
+   
+  t2<-day %>% left_join(part,by="part_id") %>%                            #Join info on day to participant
+      filter(diaryday=="First day")%>%                                    # Filter to day 1
+      group_by (.dots=variables$var[[i]]) %>% 
+      do(data.frame(t(quantile(.$social_cont, probs=c(0.25,0.5,0.75)))))          # Median and IQR      
+  t2$med_contact<- as.character(paste(t2$X50.,"(",t2$X25.,"-",t2$X75.,")",sep=""))#Formatting for export
+
+# Median contacts for day 1+ day2 combined (median per day)
+   
+   t3<-day %>% left_join(part, by="part_id") %>%
+       group_by (.dots=variables$var[[i]]) %>% 
+       do(data.frame(t(quantile(.$social_cont, probs=c(0.25,0.5,0.75)))))
+   t3$med_contact<- as.character(paste(t3$X50.,"(",t3$X25.,"-",t3$X75.,")",sep=""))
+   
+   
+   t1<-cbind(t1,t2$med_contact, t3$med_contact)                                   #Bind columns together
+   t1<- t1[,c(1,2,3,4)]
+   
+   t1$Total <- paste(t1$Total,"(",t1$Col,"%)",sep="")
+   t1 <- t1[,c(1,3,4)]
+   t1[,2]<-as.character(t1[,2])
+   t1[,3]<-as.character(t1[,3])
+
+
+   t1<-rbind(Tot, t1)
+   
+   rownames(t1)[1]<-variables$name[[i]]
+   list[[i]]<-t1
+   
+}
+
+res_restruct<- function(res){
+  
+  res1<-lapply(res,as.data.frame)
+  res1<-do.call(rbind,res1)
+  return(res1)
+}
+
+table_one <- res_restruct(list)
+colnames(table_one) <- c("Total(%)","Day 1 Median Contacts (IQR)", "Total contacts over 2 days")
+
+kable(table_one, digits = 0, align = "c") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+#write.csv(table_one, "../4.Results/table1.csv")
+
+
+```
+
+## Age stratified mixing matrix
+```{r}
+ 
+contact <- contact %>% left_join(part, by="part_id") %>%     #Join contact with participant info                                                                     #Make contact and part age symmetric
+                   mutate(age_cat = replace(age_cat, age_cat == "40-49", "40-59"),
+                          age_cat = replace(age_cat, age_cat == "50-59", "40-59"))
+
+## Create dummy data frame of standard structure for contact matrix
+standard_str1<-data.frame(age_cat = rep(c("0-9","10-19","20-29","30-39","40-59","60+"),6),
+                         contact_age = rep(unique(contact$contact_age),each = 6))
+
+## Number participants by age group
+part_age1 <- part %>% 
+              mutate(age_cat = replace(age_cat, age_cat == "40-49", "40-59"),
+                                   age_cat = replace(age_cat, age_cat == "50-59", "40-59")) %>%                                        group_by(age_cat)%>% dplyr::summarize(n=n())   
+
+## Contact matrix with legend
+make_matrix(contact %>% 
+                    filter(!is.na(contact_age)),                 #Remove those without contact age
+                    title = "B. Average contacts over two days", 
+                    legendpos ="top")
+
+
+```
+## Stacked barchart
+```{r}
+
+contact$loc <- NA
+
+contact <- contact %>% mutate(
+  loc = ifelse(cont_home == "1", "home",
+          ifelse(cont_otherhome == "1", "other_home",
+           ifelse(street == "1"|store == "1", "street_store",
+             ifelse(work=="1", "work", "other")))))
+
+
+unique<- nrow(contact) - (nrow(subset(contact, diaryday=="Second day" & contact_fromdayone == "Yes")))*2  # calculate unique by subtracting double of duplicates from day two from total number of contacts
+repeated <- nrow(subset(contact, diaryday=="Second day" & contact_fromdayone == "Yes"))*2   #self reported repeats from day 2 multipled by 2
+
+
+df <- rbind(data.frame(value = c("unique","repeated"), n = c(unique,repeated)) %>% mutate(prop=round((n/sum(n))*100,digits=2), var=rep("Repeated")),
+           contact %>% group_by(loc) %>% summarize(n=n()) %>% mutate(prop=round((n/sum(n))*100,digits=2), var=rep("Location")) %>% dplyr::rename(value = loc),
+           contact %>% group_by(cont_attr) %>% summarize(n=n()) %>% mutate(prop = round((n/sum(n))*100,digits=2),var=rep("Proximity"))  %>% dplyr::rename(value = cont_attr),
+           contact %>% group_by(totaltime) %>% summarize(n=n()) %>% mutate(prop = round((n/sum(n))*100, digits =2 ), var=rep("Duration")) %>% dplyr::rename(value = totaltime))%>% 
+  mutate(value1 = c("Unique","Repeated","Home","Other","Other's home","Street/Store","Work","Conv.Only","Conv & Phys","Phys.Only", "1-4 hrs","15mins -1hr","5-15 mins","< 5 mins",">4 hrs",NA),
+          value1=as.factor(value1),
+          value1= ordered(value1, levels= c("< 5 mins","5-15 mins","15mins -1hr","1-4 hrs",">4 hrs",
+                                  "Other's home","Work","Other","Street/Store","Home",
+                                  "Unique","Repeated",
+                                  "Conv.Only","Phys.Only","Conv & Phys")),
+          col = c("1","5","1","2","3","4","5","1","2","3","1","2","3","4","5","5"))
+          
+
+mypal <- c(brewer.pal (n = 5, name = "Purples"),
+           brewer.pal(n = 5, name = "Blues"),
+          brewer.pal(n=9, name="Greys")[c(2,4)],
+          brewer.pal (n=9, name = "BuGn")[c(1,3,8)])
+
+
+ggplot(df, aes(x=var,y=prop, fill=value1)) +
+        geom_col(aes(fill=value1)) +
+        geom_text(aes(label = value1),
+                  size = 3.5,
+                  position = position_stack(vjust = .5))+
+        ylab("% of all contacts") + xlab("Contact attribute") +
+        ggtitle("A. Distribution of contacts by contact attribute")+
+        scale_fill_manual(values = mypal) + 
+        theme_classic()+
+        theme(plot.title = element_text(size = 12),
+              axis.text.x = element_text(size=10),
+              axis.text.y = element_text(size=10),
+              legend.position= "none" )
+```
+## Appendix Geom col by age
+```{r}
+# y-axis = location x-axis = age
+contact <- contact %>% mutate(
+  totaltime = replace(totaltime, totaltime=="Between 1 hour to 4 hours", "1-4 hrs"),
+  totaltime = replace(totaltime, totaltime == "Between 15 minutes to 1 hour", "15mins-1 hr"),
+  totaltime = replace(totaltime, totaltime == "Between 5 to 15 minutes", "5-15 mins"),
+  totaltime = replace(totaltime, totaltime == "Less than 5 minutes", "<5 mins"),
+  totaltime = replace(totaltime, totaltime == "More than 4 hours", "4+ hrs"),
+  totaltime = as.factor(totaltime),
+  totaltime = ordered(totaltime, levels= c("<5 mins", "5-15 mins", "15mins-1 hr","1-4 hrs","4+ hrs")),
+  loc = as.factor(loc),
+  loc = ordered(loc, levels = c("other_home","work","other","street_store","home"))
+)
+
+df3 <- contact %>% group_by(age_cat, loc) %>% summarize(n=n()) %>% mutate(prop=round((n/sum(n))*100,digits=2))
+  
+p3<-ggplot(df3, aes(x=age_cat,y=prop, fill=loc)) +
+  geom_col(aes(fill = loc)) +
+  ylab("% of contacts") + xlab("Participant age group") +
+  ggtitle("A. Distribution of contacts by location")+
+  theme_classic() +
+  theme(axis.text.x = element_text(angle=0),
+        legend.title= element_blank()) +
+  scale_fill_brewer("Blues", 
+                    labels = c("Other home","Work","Other", "Street/Store", "Own home"))
+
+# y-axis = duration x-axis = age
+df4 <- contact %>% group_by(age_cat, totaltime) %>% summarize(n=n()) %>% mutate(prop=round((n/sum(n))*100,digits=2))
+  
+p4<-ggplot(df4, aes(x=age_cat,y=prop, fill=totaltime)) +
+  geom_col(aes(fill = totaltime)) +
+  ylab("% of contacts") + xlab("Participant age group") +
+  ggtitle("B. Distribution of contacts by duration")+
+  scale_fill_brewer("Blues") +
+  theme_classic()+
+  theme(axis.text.x = element_text(angle=0),
+        legend.title= element_blank())
+
+# y-axis = physical vs conversational,  x-axis = age
+df5 <- contact %>% group_by(age_cat, cont_attr) %>% summarize(n=n()) %>% mutate(prop=round((n/sum(n))*100,digits=2))
+  
+p5<-ggplot(df5, aes(x=age_cat,y=prop, fill=cont_attr)) +
+  geom_col(aes(fill = cont_attr)) +
+  ylab("% of contacts") + xlab("Participant age group") +
+  ggtitle("C. Distribution of contacts by attribute")+
+  scale_fill_brewer("Blues",
+                    labels = c("Conv only","Conv & Phys","Phys only")) +
+  theme_classic()+
+  theme(axis.text.x = element_text(angle=0),
+        legend.title= element_blank())
+
+
+## y-axis = repeated, x-axis = age
+
+df6 <- contact%>% filter(diaryday == "Second day" & !is.na(contact_fromdayone)) %>% group_by(age_cat,contact_fromdayone) %>% 
+                          summarize(n=n()) %>% mutate(prop=round((n/sum(n))*100,digits=2)) 
+p6 <-ggplot(df6, aes(x=age_cat,y=prop, fill=contact_fromdayone)) +
+  geom_col(aes(fill = contact_fromdayone)) +
+  ylab("% of contacts")+ xlab("Participant age group") +
+  ggtitle("D. Repeated vs. unique contacts")+
+  scale_fill_brewer("Blues")+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle=0),
+        legend.title= element_blank()) 
+
+
+lay<-rbind(c(1,2),
+           c(3,4))
+
+grid.arrange(p3,p4,p5,p6, 
+             layout_matrix=lay)
+
+
+
+```
+
+## Appendix, mixing matrix subsets
+
+```{r}
+make_matrix(contact %>% filter(cont_attr == "conv_only"|cont_attr == "conv_phys"), "Conversational", txt_size =8)
+make_matrix(contact %>% filter(cont_attr == "phys_only"|cont_attr == "conv_phys"), "Physical", txt_size =8)
+make_matrix(contact %>% filter(cont_home =="1"), "At home", txt_size =8)
+make_matrix(contact %>% filter(street =="1" | store=="1"), "Street or store", txt_size =8)
+make_matrix(contact %>% filter(work =="1"), "At work", txt_size =8)
+```
