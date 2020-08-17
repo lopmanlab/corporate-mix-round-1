@@ -22,9 +22,9 @@ package_list <- c(
   "tidyverse",
   "kableExtra",
   "gridExtra",
-  "ggpubr",
   "RColorBrewer",
-  "cowplot"
+  "cowplot",
+  "cellranger"
 )
 
 if(F){
@@ -111,9 +111,9 @@ variables<-data.frame(var=c("gender","age_cat","race","hispanic","hh_str"),
 for (i in 1:nrow(variables)){
   x <- part[,variables$var[[i]]]
   
-# NUmber and proportion participants in each strata
+# Number and proportion participants in each strata
   
-  t1<-as.data.frame(cbind(table(x),                                               #TOtal 
+  t1<-as.data.frame(cbind(table(x),                                               #Total 
               round(prop.table(table(x))*100,digits=1)))                          #Proportion
    colnames(t1)[1:2] <- c("Total","Col") 
    Tot<-rep("",5)
@@ -192,6 +192,7 @@ make_matrix(contact %>%
 
 
 ```
+
 ## Stacked barchart
 ```{r}
 
@@ -241,6 +242,7 @@ ggplot(df, aes(x=var,y=prop, fill=value1)) +
               axis.text.y = element_text(size=10),
               legend.position= "none" )
 ```
+
 ## Appendix Geom col by age
 ```{r}
 # y-axis = location x-axis = age
