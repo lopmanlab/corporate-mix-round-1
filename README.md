@@ -9,3 +9,4 @@ Add a master list of code in an "InstallPackages.R" file and versions used in co
 Make a Figure/Tables folder called "Analysis"<br />
 Add in CSV files for each RDS file<br />
 Add data dictionary with the CSV files<br />
+Add in abstract in the README <br />
