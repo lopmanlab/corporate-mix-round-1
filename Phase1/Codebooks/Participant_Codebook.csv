@@ -1,0 +1,10 @@
+name,data_type,ordered,value_labels,n_missing,complete_rate,n_unique,empty,top_counts,min,median,max,mean,sd,whitespace,hist,label
+part_id,numeric,,,0,1,,,,1,152,304,152.5,87.90145998,,▇▇▇▇▇,
+age,numeric,,,0,1,,,,21,36,78,39.47368421,12.96196384,,▇▅▃▂▁,
+age_cat,character,,,0,1,5,0,,3,,5,,,0,,
+gender,character,,,0,1,3,0,,4,,20,,,0,,
+race,factor,FALSE,"1. Black,2. White,3. Asian,4. Mixed,5. Other",0,1,5,,"Whi: 174, Mix: 52, Asi: 48, Bla: 26",,,,,,,,
+hispanic,character,,,0,1,2,0,,3,,13,,,0,,
+edu,character,,,1,0.996710526,6,0,,15,,70,,,0,,
+hh_str,character,,,0,1,6,0,,5,,24,,,0,,
+state_res2,character,,,0,1,4,0,,5,,8,,,0,,

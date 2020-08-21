@@ -1,0 +1,6 @@
+name,data_type,ordered,value_labels,n_missing,complete_rate,n_unique,empty,top_counts,min,median,max,mean,sd,whitespace,hist,label
+part_id,numeric,,,0,1,,,,1,152,304,152.5,87.82902366,,▇▇▇▇▇,
+diaryday,character,,,0,1,2,0,,9,,10,,,0,,
+work_loc,factor,FALSE,"1. both,2. office,3. telecommute",17,0.972039474,3,,"tel: 576, bot: 9, off: 6",,,,,,,,
+largegroup,character,,,0,1,2,0,,2,,3,,,0,,
+social_cont,numeric,,,0,1,,,,0,2,21,2.546052632,2.464479296,,▇▁▁▁▁,
