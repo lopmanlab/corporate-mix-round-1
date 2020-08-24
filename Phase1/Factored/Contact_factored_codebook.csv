@@ -1,0 +1,22 @@
+name,data_type,value_labels,Survey Question,Question type
+part_id,numeric,,NA,
+cont_id,numeric,,NA,
+diaryday,factor,"1. First day,2. Second day",NA?,Multiple choice
+contact_age,factor,"1. 0-9,2. 10-19,3. 20-29,4. 30-39,5. 40-59,6. 60+",Q9 Please choose the estimated age range of contact. ,Dropdown
+contact_gender,factor,"1. Female,2. Male,3. I don't know",Q8 What is the contact's gender?,Multiple choice
+cont_attr,factor,"1. conv_only,2. conv_phys,3. phys_only",Q10 Did you make physical contact and/or speak with this person? Select all that apply.,Dropdown
+totaltime,factor,"1. Between 1 hour to 4 hours,2. Between 15 minutes to 1 hour,3. Between 5 to 15 minutes,4. Less than 5 minutes,5. More than 4 hours",Q14 What was the total time you spent with this person during the entire day (including overnight)?,Multiple choice
+cont_home,numeric,,Q13 Where did you have contact with this person? ,Checkbox
+street,numeric,,Q13 Where did you have contact with this person? ,Checkbox
+store,numeric,,Q13 Where did you have contact with this person? ,Checkbox
+cont_otherhome,numeric,,Q13 Where did you have contact with this person? ,Checkbox
+work,numeric,,Q13 Where did you have contact with this person? ,Checkbox
+school,numeric,,Q13 Where did you have contact with this person? ,Checkbox
+worship,numeric,,Q13 Where did you have contact with this person? ,Checkbox
+leisure,numeric,,Q13 Where did you have contact with this person? ,Checkbox
+transport,numeric,,Q13 Where did you have contact with this person? ,Checkbox
+healthcare,numeric,,Q13 Where did you have contact with this person? ,Checkbox
+gym,numeric,,Q13 Where did you have contact with this person? ,Checkbox
+playground,numeric,,Q13 Where did you have contact with this person? ,Checkbox
+loc_other,numeric,,Q13 Where did you have contact with this person? ,Checkbox
+contact_fromdayone,factor,"1. I don't recall,2. No,3. Yes","Q7 If this is your second contact diary day, did you have contact with this person on the firstday",Multiple choice

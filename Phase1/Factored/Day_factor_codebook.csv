@@ -1,0 +1,6 @@
+name,data_type,value_labels,Survey Question,Question type
+part_id,numeric,,NA,NA
+diaryday,factor,"1. First day,2. Second day","Q7. If this is your second contact diary day, did you have contact with this person on the firstday?",Multiple choice
+work_loc,factor,"1. both,2. office,3. telecommute",Q3. Are you completing this survey about your in-office workday or your telework day?,Multiple choice
+largegroup,factor,"1. No,2. Yes","Q16. Were you in any large group situations (e.g. meetings, grocery store, hospitals, public performances, movie theaters, etc.) where you had contacts but could not identify everyone individually?",Multiple choice
+social_cont,numeric,,"Q4. How many people did you come into contact (as defined above) with today, excluding people in large groups that you could not identify?",Text
