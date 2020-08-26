@@ -84,6 +84,7 @@ make_matrix <- function(df1, title, txt_size=10, mid =1.25, max = 2.5, legendpos
 part <- readRDS("participant.RDS")     #Participant information
 contact<-readRDS("contact.RDS")        #Contact informtion
 day <- readRDS("day.RDS")              #Metadata on participant's day
+
 ```
 
 ## Overall median contacts per day
@@ -172,17 +173,21 @@ kable(table_one, digits = 0, align = "c") %>%
 ```{r}
  
 contact <- contact %>% left_join(part, by="part_id") %>%     #Join contact with participant info                                                                     #Make contact and part age symmetric
-                   mutate(age_cat = replace(age_cat, age_cat == "40-49", "40-59"),
+                   mutate(age_cat = as.character(age_cat),
+                          age_cat = replace(age_cat, age_cat == "40-49", "40-59"),
                           age_cat = replace(age_cat, age_cat == "50-59", "40-59"))
 
+ 
 ## Create dummy data frame of standard structure for contact matrix
 standard_str1<-data.frame(age_cat = rep(c("0-9","10-19","20-29","30-39","40-59","60+"),6),
                          contact_age = rep(unique(contact$contact_age),each = 6))
 
 ## Number participants by age group
 part_age1 <- part %>% 
-              mutate(age_cat = replace(age_cat, age_cat == "40-49", "40-59"),
-                                   age_cat = replace(age_cat, age_cat == "50-59", "40-59")) %>%                                        group_by(age_cat)%>% dplyr::summarize(n=n())   
+              mutate(age_cat = as.character(age_cat),
+                     age_cat = replace(age_cat, age_cat == "40-49", "40-59"),
+                      age_cat = replace(age_cat, age_cat == "50-59", "40-59")) %>%     
+                      group_by(age_cat)%>% dplyr::summarize(n=n())   
 
 ## Contact matrix with legend
 make_matrix(contact %>% 
@@ -247,6 +252,7 @@ ggplot(df, aes(x=var,y=prop, fill=value1)) +
 ```{r}
 # y-axis = location x-axis = age
 contact <- contact %>% mutate(
+  totaltime = as.character(totaltime),
   totaltime = replace(totaltime, totaltime=="Between 1 hour to 4 hours", "1-4 hrs"),
   totaltime = replace(totaltime, totaltime == "Between 15 minutes to 1 hour", "15mins-1 hr"),
   totaltime = replace(totaltime, totaltime == "Between 5 to 15 minutes", "5-15 mins"),
