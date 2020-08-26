@@ -1,10 +1,10 @@
 name,data_type,value_labels,Survey Question,Question Type
-part_id,numeric,,NA,
-age,numeric,,NA(Not in survey anymore),
-age_cat,factor,"1. 20-29,2. 30-39,3. 40-49,4. 50-59,5. 60+",Q4. Please indicate your age:,Dropdown
-gender,factor,"1. Female,2. Male,3. Prefer not to answer",Q5. What is your gender? ,Multiple choice
-race,factor,"1. Black,2. White,3. Asian,4. Mixed,5. Other",Q8. Which of the following races do you consider yourself to be? (Select all that apply.),Checkboxes
-hispanic,factor,"1. None of these,2. Yes",Q7.  Are you Hispanic or Latino or none of these?,Multiple choice
-edu,factor,"1. Associate degree in college (2-year),2. Bachelor's degree in college (4-year),3. Doctoral degree or Professional degree (PhD, JD, MD),4. High school graduate (high school diploma or equivalent including GED),5. Master's degree,6. Some college but no degree",Q6. What is the highest level of school you have completed or the highest degree you have received?,Multiple choice
-hh_str,factor,"1. Live alone,2. Live with parent,3. Other,4. Roommate or sibling,5. Spouse and children only,6. Spouse only",Q14. Who do you live with? (Select all that apply.) ,Checkboxes
-state_res2,factor,"1. Georgia,2. Illinois,3. Other,4. Virginia",Q10. In which state do you currently reside? ,Dropdown
+part_id,numeric,,Participant ID generated,
+age,numeric,,Please indicate your age,Text
+age_cat,factor,"1. 20-29,2. 30-39,3. 40-49,4. 50-59,5. 60+",Please indicate your age,Recategorized
+gender,factor,"1. Female,2. Male,3. Prefer not to answer",What is your gender? ,Single choice
+race,factor,"1. Black,2. White,3. Asian,4. Mixed,5. Other",Which of the following races do you consider yourself to be? (select all that apply),Recategorized
+hispanic,factor,"1. None of these,2. Yes",Are you Hispanic or Latino or none of these?,Single choice
+edu,factor,"1. Associate degree in college (2-year),2. Bachelor's degree in college (4-year),3. Doctoral degree or Professional degree (PhD, JD, MD),4. High school graduate (high school diploma or equivalent including GED),5. Master's degree,6. Some college but no degree",What is the highest level of school you have completed or the highest degree you have received?,Single choice
+hh_str,factor,"1. Live alone,2. Live with parent,3. Other,4. Roommate or sibling,5. Spouse and children only,6. Spouse only",Who do you live with (select all that apply),Recategorized
+state_res2,factor,"1. Georgia,2. Illinois,3. Other,4. Virginia",In which state do you currently reside? ,Single choice
