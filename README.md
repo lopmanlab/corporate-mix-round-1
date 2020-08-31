@@ -1,5 +1,11 @@
-# corpmix
-Repository contains analytical script and data files used in the analysis of Phase I of Corporate Mix study. 
+# Corporate Mixing Study
+This repository contains the source code, analytical script, and data files used in the analysis of Phase I contact diary data of the Corporate Mix study. The study followed employees at 3 companies in the Atlanta, Georgia area. The purpose of the study is identify contact patterns of an office settings to better model infectious respiratory diseases such as the flu.
+
+## Abstract
+# Background:
+# Methods:
+# Results: 
+# Conclusions:
 
 ## Data file descriptions
 
