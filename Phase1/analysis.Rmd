@@ -335,3 +335,30 @@ make_matrix(contact %>% filter(cont_home =="1"), "At home", txt_size =8)
 make_matrix(contact %>% filter(street =="1" | store=="1"), "Street or store", txt_size =8)
 make_matrix(contact %>% filter(work =="1"), "At work", txt_size =8)
 ```
+Q index for assortativeness
+```{r}
+
+## Create matrix for 20-60+ year olds where the cells are fractions/proportions of total contacts of age group i with age group j
+P <- contact %>%
+  filter(contact_age != "0-9" & contact_age != "10-19") %>%
+  group_by(age_cat,contact_age) %>%
+  summarize(num_cell_contact=n()) %>% left_join(
+    contact %>% 
+      filter(contact_age != "0-9" & contact_age != "10-19") %>%
+      group_by(age_cat) %>%
+      summarize(num_age_contact = n()),
+    by="age_cat"
+  ) %>% mutate(
+    frac = num_cell_contact/num_age_contact
+  ) %>%
+  select(age_cat, contact_age, frac) %>% 
+  spread(contact_age, frac) 
+
+P<- as.matrix(as.data.frame(P)[,2:5])
+rownames(P)<-colnames(P)
+
+
+# Calculate Q index for assortativeness
+Q <- (sum(diag(P)) - 1) / (dim(P)[1] - 1)
+```
+
