@@ -32,7 +32,7 @@ The outcome was median number of contacts per person per day. This was stratifie
 <b>Results</b>
 Of 3,895 employees approached, 357(9.6%)completedthe first day of contact diary of which 304 completedboth days of contact diary. There was amedian of 2 contacts (IQR: 1-4, range: 0-21) per respondent on both day one and two. The majority (55%) of contacts involved conversation only, occurred at home (64%), and cumulatively lasted more than 4 hours (38%). Most contacts were repeated, andwithin same age groups,though 30-59 year-old participants reported substantialinter-generational mixingwith children.
 
-<b>Conclusion<b>
+<b>Conclusion</b>
 Participating employees in 3 surveyed workplaces reported few contacts,similar to studies from the UK and Chinawhen shelter-in-place orders were in effect during the pandemic. Many contacts were repeated whichmay limit the spread of infection. Future rounds are planned to assess changes in contact patterns when employees resume work in the office.
 
 
