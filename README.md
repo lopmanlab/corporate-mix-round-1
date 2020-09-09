@@ -1,6 +1,6 @@
 # Corporate Mixing Study
 ## To do list:
-Add to about section<br />
+<strike>Add to about section<strike /><br />
 Add a master list of packages used in an "InstallPackages.R" file and versions used in comments <br />
 Make a Figure/Tables folder called "Analysis" <br />
 Add pngs and/or pdfs of figures and tables <br />
@@ -34,13 +34,7 @@ Of 3,895 employees approached, 357(9.6%)completedthe first day of contact diary 
 
 <b>Conclusion<b>
 Participating employees in 3 surveyed workplaces reported few contacts,similar to studies from the UK and Chinawhen shelter-in-place orders were in effect during the pandemic. Many contacts were repeated whichmay limit the spread of infection. Future rounds are planned to assess changes in contact patterns when employees resume work in the office.
-<b>Background:</b>  some sample text<br />
 
-<b>Methods:</b> some sample text<br />
-
-<b>Results: </b> some sample text <br />
-
-<b>Conclusions:</b> some sample text <br />
 
 ## Data file descriptions
 
