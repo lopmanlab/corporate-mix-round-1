@@ -1,6 +1,6 @@
 # Corporate Mixing Study
 ## To do list:
-<strike>Add to about section<strike /><br />
+<strike>Add to about section</strike><br />
 Add a master list of packages used in an "InstallPackages.R" file and versions used in comments <br />
 Make a Figure/Tables folder called "Analysis" <br />
 Add pngs and/or pdfs of figures and tables <br />
