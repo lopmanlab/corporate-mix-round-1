@@ -1,5 +1,5 @@
-## Installing required packges
-package_list <- c(
+### Package Installation
+list.of.packages <- c(
   "reshape2",
   "ggplot2",
   "ggpubr",
@@ -11,8 +11,6 @@ package_list <- c(
   "cowplot",
   "cellranger"
 )
-if(F){
-  install.packages(package_list)
-}
-lapply(package_list, function(x) library(x, character.only = T))
-rm(package_list)
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+rm(list.of.packages,new.packages) #Removes lists for cleanliness
