@@ -1,7 +1,7 @@
-# Datasets ---------------------------------
+## Datasets ---------------------------------
 contact<-readRDS('./Phase1/Datasets/contact.rds')
 
-# Packages ---------------------------------
+## Packages ---------------------------------
 list.of.packages <- c(
   "reshape2",
   "ggplot2",
@@ -16,9 +16,35 @@ list.of.packages <- c(
 )
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
+invisible(lapply(list.of.packages,library,character.only=T))
 rm(list.of.packages,new.packages) #Removes lists for cleanliness
 
-# Variable Creation -----------------------
+## Functions -------------------------
+# Function used to save legend of ggplot2 (allows manipulating legend)
+get_legend<-function(myggplot){
+  tmp <- ggplot_gtable(ggplot_build(myggplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)
+}
+
+# Function used to visualize age-specific contact mixing matrix with controls over title, text size, mid and max points for legend and legend position
+
+contactmatrix_viz<-function(matrix1,title,txt_size, mid, max, legendpos){
+  ggplot(data = matrix1, aes(x=factor(age_cat), y=factor(contact_age), fill=avg_cont)) +    ##var1 is age of person, var2 is age of contact
+    geom_raster(hjust = 0.5, vjust = 0.5,show.legend=T)+
+    scale_fill_gradient2(low = "white", high = "#273871", mid = "#7FABD3", midpoint = mid, limit = c(0,max))+
+    xlab("Age of participant")+ylab("Age of contact")+labs(fill = "Average \ncontact")+
+    theme_classic()+
+    theme(plot.title = element_text(size = 12), legend.title=element_text(size = 10),
+          axis.text.x = element_text(size = 10), # changed from txt_size (MK)
+          axis.text.y = element_text(size= 10),
+          legend.justification = "right",
+          legend.position = legendpos) +
+    ggtitle(title)
+}
+
+## Variable Creation -----------------------
 
 contact$loc <- NA
 contact <- contact %>% mutate(
@@ -49,7 +75,7 @@ mypal <- c(brewer.pal (n = 5, name = "Purples"),
            brewer.pal(n=9, name="Greys")[c(2,4)],
            brewer.pal (n=9, name = "BuGn")[c(1,3,8)])
 
-# Figure 1: Distribution of contacts by contact attribute ----
+## Figure 1: Distribution of contacts by contact attribute ----
 ggplot(df, aes(x=var,y=prop, fill=value1)) +
   geom_col(aes(fill=value1)) +
   geom_text(aes(label = value1),
