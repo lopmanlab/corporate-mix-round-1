@@ -1,12 +1,31 @@
-#Figure 1
-contact$loc <- NA
+# Datasets ---------------------------------
+contact<-readRDS('./Phase1/Datasets/contact.rds')
 
+# Packages ---------------------------------
+list.of.packages <- c(
+  "reshape2",
+  "ggplot2",
+  "ggpubr",
+  "dplyr",
+  "tidyverse",
+  "kableExtra",
+  "gridExtra",
+  "RColorBrewer",
+  "cowplot",
+  "cellranger"
+)
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+rm(list.of.packages,new.packages) #Removes lists for cleanliness
+
+# Variable Creation -----------------------
+
+contact$loc <- NA
 contact <- contact %>% mutate(
   loc = ifelse(cont_home == "1", "home",
                ifelse(cont_otherhome == "1", "other_home",
                       ifelse(street == "1"|store == "1", "street_store",
                              ifelse(work=="1", "work", "other")))))
-
 
 unique<- nrow(contact) - (nrow(subset(contact, diaryday=="Second day" & contact_fromdayone == "Yes")))*2  # calculate unique by subtracting double of duplicates from day two from total number of contacts
 repeated <- nrow(subset(contact, diaryday=="Second day" & contact_fromdayone == "Yes"))*2   #self reported repeats from day 2 multipled by 2
@@ -30,7 +49,7 @@ mypal <- c(brewer.pal (n = 5, name = "Purples"),
            brewer.pal(n=9, name="Greys")[c(2,4)],
            brewer.pal (n=9, name = "BuGn")[c(1,3,8)])
 
-
+# Figure 1: Distribution of contacts by contact attribute ----
 ggplot(df, aes(x=var,y=prop, fill=value1)) +
   geom_col(aes(fill=value1)) +
   geom_text(aes(label = value1),
