@@ -1,16 +1,8 @@
-<<<<<<< HEAD
 ## Datasets ---------------------------------
 contact<-readRDS('./Phase1/Datasets/contact.rds')
 part<-readRDS('./Phase1/Datasets/participant.rds')
 
-## Packages ---------------------------------
-=======
-# Datasets ---------------------------------
-contact<-readRDS('./Phase1/Datasets/contact.rds')
-part<-readRDS('./Phase1/Datasets/participant.rds')
-
 # Packages ---------------------------------
->>>>>>> 5f087a880b5c9aeff839562f583a721cf4587149
 list.of.packages <- c(
   "reshape2",
   "ggplot2",
@@ -25,7 +17,6 @@ list.of.packages <- c(
 )
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
-<<<<<<< HEAD
 invisible(lapply(list.of.packages,library,character.only=T))
 rm(list.of.packages,new.packages) #Removes lists for cleanliness
 
@@ -56,11 +47,6 @@ contactmatrix_viz<-function(matrix1,title,txt_size, mid, max, legendpos){
 
 
 ## Variable Creation -----------------------
-=======
-rm(list.of.packages,new.packages) #Removes lists for cleanliness
-
-# Variable Creation -----------------------
->>>>>>> 5f087a880b5c9aeff839562f583a721cf4587149
 contact$loc <- NA
 contact <- contact %>% left_join(part, by="part_id") %>%     #Join contact with participant info                                                                     #Make contact and part age symmetric
   mutate(age_cat = as.character(age_cat),
@@ -81,12 +67,8 @@ contact <- contact %>% left_join(part, by="part_id") %>%     #Join contact with 
   loc = as.factor(loc),
   loc = ordered(loc, levels = c("other_home","work","other","street_store","home"))
 )
-<<<<<<< HEAD
 
 ## Plot 1 y-axis = location x-axis= age ----
-=======
-# Plot 1 y-axis = location x-axis= age ----
->>>>>>> 5f087a880b5c9aeff839562f583a721cf4587149
 df3 <- contact %>% group_by(age_cat, loc) %>% summarize(n=n()) %>% mutate(prop=round((n/sum(n))*100,digits=2))
 
 p3<-ggplot(df3, aes(x=age_cat,y=prop, fill=loc)) +
@@ -99,11 +81,8 @@ p3<-ggplot(df3, aes(x=age_cat,y=prop, fill=loc)) +
   scale_fill_brewer("Blues", 
                     labels = c("Other home","Work","Other", "Street/Store", "Own home"))
 
-<<<<<<< HEAD
+
 ## Plot2: y-axis = duration x-axis = age ----
-=======
-# Plot2: y-axis = duration x-axis = age ----
->>>>>>> 5f087a880b5c9aeff839562f583a721cf4587149
 df4 <- contact %>% group_by(age_cat, totaltime) %>% summarize(n=n()) %>% mutate(prop=round((n/sum(n))*100,digits=2))
 
 p4<-ggplot(df4, aes(x=age_cat,y=prop, fill=totaltime)) +
@@ -115,11 +94,8 @@ p4<-ggplot(df4, aes(x=age_cat,y=prop, fill=totaltime)) +
   theme(axis.text.x = element_text(angle=0),
         legend.title= element_blank())
 
-<<<<<<< HEAD
+
 ## Plot 3: y-axis = physical vs conversational,  x-axis = age ----
-=======
-# Plot 3: y-axis = physical vs conversational,  x-axis = age ----
->>>>>>> 5f087a880b5c9aeff839562f583a721cf4587149
 df5 <- contact %>% group_by(age_cat, cont_attr) %>% summarize(n=n()) %>% mutate(prop=round((n/sum(n))*100,digits=2))
 
 p5<-ggplot(df5, aes(x=age_cat,y=prop, fill=cont_attr)) +
@@ -147,11 +123,7 @@ p6 <-ggplot(df6, aes(x=age_cat,y=prop, fill=contact_fromdayone)) +
         legend.title= element_blank()) 
 
 
-<<<<<<< HEAD
 ## 2x2 grid layout -----
-=======
-## 2x2 grid layout
->>>>>>> 5f087a880b5c9aeff839562f583a721cf4587149
 lay<-rbind(c(1,2),
            c(3,4))
 grid.arrange(p3,p4,p5,p6, 
