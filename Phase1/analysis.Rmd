@@ -81,9 +81,9 @@ make_matrix <- function(df1, title, txt_size=10, mid =1.25, max = 2.5, legendpos
 
 ## Read in data
 ```{r}
-part <- readRDS("participant.RDS")     #Participant information
-contact<-readRDS("contact.RDS")        #Contact informtion
-day <- readRDS("day.RDS")              #Metadata on participant's day
+part <- readRDS("Datasets/participant.RDS")     #Participant information
+contact<-readRDS("Datasets/contact.RDS")        #Contact informtion
+day <- readRDS("Datasets/day.RDS")              #Metadata on participant's day
 
 ```
 
@@ -334,8 +334,39 @@ make_matrix(contact %>% filter(cont_attr == "phys_only"|cont_attr == "conv_phys"
 make_matrix(contact %>% filter(cont_home =="1"), "At home", txt_size =8)
 make_matrix(contact %>% filter(street =="1" | store=="1"), "Street or store", txt_size =8)
 make_matrix(contact %>% filter(work =="1"), "At work", txt_size =8)
+
 ```
-Q index for assortativeness
+## Appendix mixing matrix subsets for repeated contacts
+```{r}
+
+two_day_dup <-contact %>% filter(diaryday == "Second day" & contact_fromdayone == "Yes") %>%
+              group_by(age_cat,contact_age) %>% 
+                          summarize(tot_contacts=n()) %>% 
+                          full_join(standard_str1, by= c("age_cat","contact_age"),keep=F) %>%
+                          replace(is.na(.), 0) %>%
+                          left_join(part_age1,by="age_cat") %>%
+                          mutate(avg_cont = (tot_contacts/n),
+                                 avg_cont = avg_cont*2) 
+
+
+two_day_unique <- contact %>%
+                  group_by(age_cat,contact_age) %>% 
+                          summarize(tot_contacts=n()) %>% 
+                          full_join(standard_str1, by= c("age_cat","contact_age"),keep=F) %>%
+                          replace(is.na(.), 0) %>%
+                          left_join(part_age1,by="age_cat") %>%
+                          mutate(avg_cont = (tot_contacts/n)) %>% 
+                  left_join (two_day_dup, by = c("age_cat","contact_age")) %>%
+                   mutate(avg_cont = avg_cont.x-avg_cont.y,
+                          avg_cont= replace(avg_cont, avg_cont<0,0)) %>%
+                   select(age_cat, contact_age, avg_cont)
+
+contactmatrix_viz(two_day_dup, title = "Repeated over two days",txt_size = 8, max = 2.5, mid=1.25, legendpos = "top")
+contactmatrix_viz(two_day_unique, title = "Unique over two days",txt_size = 8, max = 2.5, mid=1.25, legendpos = "top")
+```
+
+
+## Q index for assortativeness
 ```{r}
 
 ## Create matrix for 20-60+ year olds where the cells are fractions/proportions of total contacts of age group i with age group j
