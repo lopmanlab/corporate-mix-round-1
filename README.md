@@ -26,8 +26,3 @@ Of 3,895 employees approached, 357(9.6%)completedthe first day of contact diary 
 
 <b>Conclusion</b>
 Participating employees in 3 surveyed workplaces reported few contacts,similar to studies from the UK and Chinawhen shelter-in-place orders were in effect during the pandemic. Many contacts were repeated whichmay limit the spread of infection. Future rounds are planned to assess changes in contact patterns when employees resume work in the office.
-
-
-## Data file descriptions
-
-
