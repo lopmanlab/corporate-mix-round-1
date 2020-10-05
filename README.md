@@ -3,7 +3,7 @@
 This repository contains the source code, analysis script, and data files used in the analysis of Phase I contact diary data of the Corporate Mix study.
 
 ## Citation 
-> Add the peoples names
+Moses C. Kiti Ph.D, Obianuju G. Aguolu Ph.D, Carol Y. Liu MSc, Ana R. Mesa MPH, Rachel Regina BDes, Kathryn Willebrand BS, Chandra Couzens MPH, Tilman Bartelsmeyer BS, Kristin Nelson Ph.D, Samuel Jenness Ph.D, Steven Riley Ph.D, Alessia Melegaro Ph.D, Faruque Ahmed Ph.D, Fauzia Malik Ph.D, Ben Lopman Ph.D, Saad B. Omer Ph.D
 
 ## Abstract
 <b>Importance</b>
