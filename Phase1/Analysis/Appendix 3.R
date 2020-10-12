@@ -1,7 +1,7 @@
 contact<-readRDS('./Phase1/Datasets/contact.rds')
 part<-readRDS('./Phase1/Datasets/participant.rds')
 # Packages ---------------------------------
-list.of.packages <- c(
+package_list <- c(
   "reshape2",
   "ggplot2",
   "ggpubr",
@@ -13,10 +13,13 @@ list.of.packages <- c(
   "cowplot",
   "cellranger"
 )
-new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
-invisible(lapply(list.of.packages,library,character.only=T))
-rm(list.of.packages,new.packages) #Removes lists for cleanliness
+if(F){
+  install.packages(package_list)
+}
+
+invisible(lapply(package_list, function(x) library(x, character.only = T)))
+
+rm(package_list)
 make_matrix <- function(df1, title, txt_size=10, mid =1.25, max = 2.5, legendpos="top") {
   df1 %>%group_by(age_cat,contact_age) %>% 
     summarize(tot_contacts=n()) %>% 
