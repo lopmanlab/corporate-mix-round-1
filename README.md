@@ -1,4 +1,4 @@
-# Corporate Mixing Study
+# Corporate Mixing Study: Phase 1 
 
 This repository contains the source code, analysis script, and data files used in the analysis of Phase I contact diary data of the Corporate Mix study.
 
